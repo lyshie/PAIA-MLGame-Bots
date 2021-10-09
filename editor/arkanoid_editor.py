@@ -1,7 +1,11 @@
 """
 Author: HSIEH Li-Yi
-"""
 
+ $ python arkanoid_editor.py -x 0 -y 50 -f zigzag.txt
+
+ = brick
+ # hard brick
+"""
 import argparse
 
 
