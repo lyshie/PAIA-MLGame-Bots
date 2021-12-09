@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Arkanoid map editor for PAIA-Desktop</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <style>
+        .draggable {
+            width: 25px;
+            height: 10px;
+            float: left;
+            margin: 0px;
+            display: block;
+        }
+
+        .brick {
+            background-color: orange;
+            background-image: radial-gradient(ellipse, yellow, orange);
+            border: 0px solid black;
+        }
+
+        .hard-brick {
+            background-color: red;
+            background-image: radial-gradient(ellipse, yellow, red);
+            border: 0px solid black;
+        }
+
+        .ui-widget-header p,
+        .ui-widget-content p {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #snaptarget {
+            height: 500px;
+            width: 200px;
+            padding: 0px;
+            background-color: #0d0d0d;
+            border: 1px solid black;
+            float: right;
+            margin-right: 10px;
+        }
+
+        .column-left {
+            left: 0%;
+            width: 50%;
+            float: left;
+        }
+
+        .column-right {
+            left: 50%;
+            width: 50%;
+            float: left;
+        }
+
+        #map {
+            background-color: #c0c0c0;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $(".brick").draggable({
+                grid: [5, 10]
+            });
+
+            $(document).on('click', '.brick', function() {
+                if (!$(this).hasClass('hard-brick')) {
+                    $(this).addClass('hard-brick');
+                } else {
+                    $(this).removeClass('hard-brick');
+                }
+            });
+
+            $("#generate").click(function() {
+                $("#map").empty();
+                $("#map").append($("#offset_x").val() + " " +
+                    $("#offset_y").val() + " -1" + "\r\n");
+
+                $('.brick').each(function(index) {
+                    var target_left = $("#snaptarget").offset().left;
+                    var target_top = $("#snaptarget").offset().top;
+
+                    var _left = Math.round($(this).offset().left - target_left - 1);
+                    var _top = Math.round($(this).offset().top - target_top - 1);
+                    var _hard = $(this).hasClass('hard-brick') ? 1 : 0;
+
+                    console.log(_left, _top, _hard);
+
+                    if ((_left >= 0 && _left <= 175) && (_top >= 0 && _top <= 490)) {
+                        $("#map").append(_left + " " + _top + " " + _hard + "\r\n");
+                    }
+
+                });
+            });
+
+            $("#snaptarget").dblclick(function() {
+                brick = $('<div class="draggable ui-widget-content brick">').clone().draggable({
+                    grid: [5, 10],
+                }).appendTo(this);
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+    <div class="column-left">
+        <div id="snaptarget" class="ui-widget-header">
+        </div>
+        <p>Arkanoid map editor for PAIA-Desktop <a href="https://github.com/lyshie" target="_blank">@lyshie</a></p>
+        <p>Double click on the background to create a normal <span style="color:orange">brick</span>.</p>
+        <p>Click the brick to toggle <span style="color:red">hard</span>.</p>
+    </div>
+    <div class="column-right">
+        <label for="offset_x">Offset-X:</label><input type="number" id="offset_x" value="0" min="0" max="200"></input>
+        <label for="offset_y">Offset-Y:</label><input type="number" id="offset_y" value="0" min="0" max="500"></input>
+        <button type="button" id="generate">Generate</button>
+        <pre id="map"></pre>
+    </div>
+</body>
+
+</html>
