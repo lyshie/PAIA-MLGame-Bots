@@ -114,6 +114,33 @@
                 document.body.removeChild(element);
             }
 
+            // 檢查磚塊是否有效，並計算相對位置
+            function validBrick(brick) {
+                var _left = Math.round($(brick)
+                    .offset().left - $(brick).parent()
+                    .offset()
+                    .left);
+                var _top = Math.round($(brick)
+                    .offset().top - $(brick).parent()
+                    .offset()
+                    .top);
+
+                if ((_left >= 0 && _left <= 175) &&
+                    (_top >= 0 && _top <= 490)) {
+                    return {
+                        valid: true,
+                        left: _left,
+                        top: _top
+                    };
+                } else {
+                    return {
+                        valid: false,
+                        left: _left,
+                        top: _top
+                    };
+                }
+            }
+
             // 自動貼齊 水平5 垂直10
             $(".brick").draggable({
                 grid: [5, 10]
@@ -135,23 +162,15 @@
                 );
 
                 $('.brick').each(function(index, val) {
-                    var _left = Math.round($(this)
-                        .offset().left - $(this).parent()
-                        .offset()
-                        .left);
-                    var _top = Math.round($(this)
-                        .offset().top - $(this).parent()
-                        .offset()
-                        .top);
+                    var result = validBrick(this);
                     // 硬磚塊
                     var _hard = $(this).hasClass(
                         'hard-brick') ? 1 : 0;
 
-                    if ((_left >= 0 && _left <= 175) &&
-                        (_top >= 0 && _top <= 490)) {
+                    if (result.valid) {
                         // 有效磚塊
-                        $("#map").append(_left + " " +
-                            _top + " " + _hard +
+                        $("#map").append(result.left + " " +
+                            result.top + " " + _hard +
                             "\r\n");
                     }
                 });
@@ -167,25 +186,18 @@
                 ).clone().draggable({
                     grid: [5, 10],
                     stop: function() {
-                        console.log('this offset / position', $(this).offset(), $(this).position());
-                        console.log('this.parent offset / position', $(this).parent().offset(), $(this).parent().position());
-                        var _left = Math.round($(
-                                this).offset()
-                            .left - $(this).parent()
-                            .offset().left
-                        );
-                        var _top = Math.round($(
-                                this)
-                            .offset().top -
-                            $(this).parent().offset()
-                            .top);
+                        result = validBrick(this);
 
-                        console.log(_left, _top)
+                        // 計算磚塊實際位置
+                        var _left = result.left + $(this).parent().offset().left;
+                        var _top = result.top + $(this).parent().offset().top;
 
-                        if ((_left >= 0 && _left <=
-                                175) &&
-                            (_top >= 0 && _top <=
-                                490)) {
+                        $(this).offset({
+                            left: _left,
+                            top: _top
+                        });
+
+                        if (result.valid) {
                             // 有效磚塊
                             $(this).removeClass(
                                 'disable');
@@ -208,8 +220,6 @@
                     top: Math.trunc((e.pageY - _top) /
                         10) * 10 + _top
                 });
-
-                console.log('brick', brick.offset())
 
                 // 新建立磚塊的效果
                 brick.addClass('born');
