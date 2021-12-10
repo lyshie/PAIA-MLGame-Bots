@@ -20,16 +20,40 @@
             filter: grayscale(1);
         }
 
+        .born {
+            background-color: green;
+            background-image: radial-gradient(ellipse, yellow, green) !important;
+            border: 0px;
+            display: block;
+            position: absolute;
+        }
+
         .brick {
             background-color: orange;
             background-image: radial-gradient(ellipse, yellow, orange);
-            border: 0px solid black;
+            border: 0px;
+            display: block;
+            position: absolute;
         }
 
         .hard-brick {
             background-color: red;
-            background-image: radial-gradient(ellipse, yellow, red);
-            border: 0px solid black;
+            background-image: radial-gradient(ellipse, yellow, red) !important;
+            border: 0px;
+            display: block;
+            position: absolute;
+        }
+
+        .paddle {
+            background-color: cyan;
+            background-image: radial-gradient(ellipse, green, cyan);
+            border: 0px;
+            width: 40px;
+            height: 5px;
+            left: 75px;
+            top: 400px;
+            display: block;
+            position: relative;
         }
 
         .ui-widget-header p,
@@ -42,8 +66,8 @@
             height: 500px;
             width: 200px;
             padding: 0px;
-            background-color: #0d0d0d;
-            border: 1px solid black;
+            background-color: #0e0e0e;
+            border: 0px;
             float: right;
             margin-right: 10px;
         }
@@ -128,8 +152,6 @@
                     var _hard = $(this).hasClass(
                         'hard-brick') ? 1 : 0;
 
-                    console.log(_left, _top);
-
                     if ((_left >= 0 && _left <= 175) &&
                         (_top >= 0 && _top <= 490))
                     {
@@ -157,15 +179,14 @@
                         var _left = parseInt($(
                                 this).position()
                             .left - $(this).parent()
-                            .position().left -
-                            1);
+                            .position().left
+                        );
                         var _top = parseInt($(
                                 this)
                             .position().top -
                             $(this).parent().position()
-                            .top - 1);
+                            .top);
 
-                        console.log(_left, _top);
                         if ((_left >= 0 && _left <=
                                 175) &&
                             (_top >= 0 && _top <=
@@ -184,11 +205,25 @@
                     }
                 });
 
-                brick.appendTo(this);
+                brick.appendTo($("#snaptarget"));
 
-                var _left = brick.offset().left;
-                var _top = brick.offset().top;
-                //console.log(_left, _top);
+                // 就近到滑鼠位置
+                var _left = brick.parent().offset().left;
+                var _top = brick.parent().offset().top;
+                brick.offset(
+                {
+                    left: parseInt((e.pageX - _left) /
+                        25) * 25 + _left,
+                    top: parseInt((e.pageY - _top) /
+                        10) * 10 + _top
+                });
+
+                // 新建立磚塊的效果
+                brick.addClass('born');
+                setTimeout(function()
+                {
+                    brick.removeClass('born');
+                }, 500);
             });
         });
     </script>
@@ -197,6 +232,7 @@
 <body>
     <div class="column-left">
         <div id="snaptarget" class="ui-widget-header">
+            <div class="paddle"></div>
         </div>
         <div id="help">
             <p>Arkanoid map editor for <a href="https://github.com/PAIA-Playful-AI-Arena/Paia-Desktop"
