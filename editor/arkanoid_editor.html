@@ -13,7 +13,6 @@
             float: left;
             margin: 0px;
             display: block;
-            position: absolute;
         }
 
         .disable {
@@ -25,7 +24,7 @@
             background-image: radial-gradient(ellipse, yellow, green) !important;
             border: 0px;
             display: block;
-            position: absolute;
+            opacity: 0.8;
         }
 
         .brick {
@@ -33,7 +32,7 @@
             background-image: radial-gradient(ellipse, yellow, orange);
             border: 0px;
             display: block;
-            position: absolute;
+            opacity: 0.8;
         }
 
         .hard-brick {
@@ -41,12 +40,14 @@
             background-image: radial-gradient(ellipse, yellow, red) !important;
             border: 0px;
             display: block;
-            position: absolute;
+            opacity: 0.8;
         }
 
         .paddle {
             background-color: cyan;
             background-image: radial-gradient(ellipse, green, cyan);
+            margin: 0px;
+            padding: 0px;
             border: 0px;
             width: 40px;
             height: 5px;
@@ -96,11 +97,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
     <script>
-        $(function()
-        {
+        $(function() {
 
-            function download(filename, text)
-            {
+            function download(filename, text) {
                 var element = document.createElement('a');
                 element.setAttribute('href',
                     'data:text/plain;charset=utf-8,' +
@@ -116,21 +115,18 @@
             }
 
             // 自動貼齊 水平5 垂直10
-            $(".brick").draggable(
-            {
+            $(".brick").draggable({
                 grid: [5, 10]
             });
 
             // 切換硬磚塊
-            $(document).on('click', '.brick', function()
-            {
+            $(document).on('click', '.brick', function() {
                 $(this).toggleClass('hard-brick');
             });
 
 
             // 下載檔案
-            $("#generate").click(function()
-            {
+            $("#generate").click(function() {
                 $("#map").empty();
                 $("#map").append(parseInt($("#offset_x").val()) +
                     " " +
@@ -138,23 +134,21 @@
                     " -1" + "\r\n"
                 );
 
-                $('.brick').each(function(index, val)
-                {
-                    var _left = parseInt($(this)
+                $('.brick').each(function(index, val) {
+                    var _left = Math.round($(this)
                         .offset().left - $(this).parent()
                         .offset()
-                        .left - 1);
-                    var _top = parseInt($(this)
+                        .left);
+                    var _top = Math.round($(this)
                         .offset().top - $(this).parent()
                         .offset()
-                        .top - 1);
+                        .top);
                     // 硬磚塊
                     var _hard = $(this).hasClass(
                         'hard-brick') ? 1 : 0;
 
                     if ((_left >= 0 && _left <= 175) &&
-                        (_top >= 0 && _top <= 490))
-                    {
+                        (_top >= 0 && _top <= 490)) {
                         // 有效磚塊
                         $("#map").append(_left + " " +
                             _top + " " + _hard +
@@ -167,37 +161,35 @@
                 download(level + ".dat", $("#map").text());
             });
 
-            $("#snaptarget").dblclick(function(e)
-            {
+            $("#snaptarget").dblclick(function(e) {
                 brick = $(
                     '<div class="draggable ui-widget-content brick">'
-                ).clone().draggable(
-                {
+                ).clone().draggable({
                     grid: [5, 10],
-                    stop: function(e)
-                    {
-                        var _left = parseInt($(
-                                this).position()
+                    stop: function() {
+                        console.log('this offset / position', $(this).offset(), $(this).position());
+                        console.log('this.parent offset / position', $(this).parent().offset(), $(this).parent().position());
+                        var _left = Math.round($(
+                                this).offset()
                             .left - $(this).parent()
-                            .position().left
+                            .offset().left
                         );
-                        var _top = parseInt($(
+                        var _top = Math.round($(
                                 this)
-                            .position().top -
-                            $(this).parent().position()
+                            .offset().top -
+                            $(this).parent().offset()
                             .top);
+
+                        console.log(_left, _top)
 
                         if ((_left >= 0 && _left <=
                                 175) &&
                             (_top >= 0 && _top <=
-                                490))
-                        {
+                                490)) {
                             // 有效磚塊
                             $(this).removeClass(
                                 'disable');
-                        }
-                        else
-                        {
+                        } else {
                             // 無效磚塊
                             $(this).addClass(
                                 'disable');
@@ -210,20 +202,20 @@
                 // 就近到滑鼠位置
                 var _left = brick.parent().offset().left;
                 var _top = brick.parent().offset().top;
-                brick.offset(
-                {
-                    left: parseInt((e.pageX - _left) /
+                brick.offset({
+                    left: Math.trunc((e.pageX - _left) /
                         25) * 25 + _left,
-                    top: parseInt((e.pageY - _top) /
+                    top: Math.trunc((e.pageY - _top) /
                         10) * 10 + _top
                 });
 
+                console.log('brick', brick.offset())
+
                 // 新建立磚塊的效果
                 brick.addClass('born');
-                setTimeout(function()
-                {
+                setTimeout(function() {
                     brick.removeClass('born');
-                }, 500);
+                }, 200);
             });
         });
     </script>
@@ -235,9 +227,7 @@
             <div class="paddle"></div>
         </div>
         <div id="help">
-            <p>Arkanoid map editor for <a href="https://github.com/PAIA-Playful-AI-Arena/Paia-Desktop"
-                    target="_blank">PAIA-Desktop</a> <a href="https://github.com/lyshie/PAIA-MLGame-Bots"
-                    target="_blank">@lyshie</a></p>
+            <p>Arkanoid map editor for <a href="https://github.com/PAIA-Playful-AI-Arena/Paia-Desktop" target="_blank">PAIA-Desktop</a> <a href="https://github.com/lyshie/PAIA-MLGame-Bots" target="_blank">@lyshie</a></p>
             <ol>
                 <li>遊戲背景點兩下產生新的<span style="color:orange">磚塊</span></li>
                 <li>拖曳磚塊可設定位置</li>
@@ -246,12 +236,9 @@
         </div>
     </div>
     <div class="column-right">
-        <label for="level">關卡名稱：</label><input type="number" id="level" value="101"
-            min="0" max="999"></input><br>
-        <label for="offset_x">X-軸偏移：</label><input type="number" id="offset_x"
-            value="0" min="0" max="200"></input><br>
-        <label for="offset_y">Y-軸偏移：</label><input type="number" id="offset_y"
-            value="0" min="0" max="500"></input><br>
+        <label for="level">關卡名稱：</label><input type="number" id="level" value="101" min="0" max="999"></input><br>
+        <label for="offset_x">X-軸偏移：</label><input type="number" id="offset_x" value="0" min="0" max="200"></input><br>
+        <label for="offset_y">Y-軸偏移：</label><input type="number" id="offset_y" value="0" min="0" max="500"></input><br>
         <button type="button" id="generate">下載</button>
         <pre id="map"></pre>
     </div>
