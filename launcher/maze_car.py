@@ -3,19 +3,25 @@ from tkinter import *
 from tkinter import ttk, filedialog, scrolledtext
 from PIL import Image, ImageTk
 import subprocess
+import os
+import json
+import re
+import sys
 
 
 class MazeOption():
-    def __init__(self):
+    def __init__(self, mlgame):
         self.win = tk.Tk()
         self.win.title("PAIA 迷宮車競賽")
         self.align_right = 'nse'
         self.align_left = 'nsw'
+        self.align_full = 'nswe'
         '''
             Option variables
         '''
         self.imgCars = []
         self.options = {
+            'mlgame': StringVar(value=mlgame),
             'mode': StringVar(value='MAZE'),
             'map': IntVar(value='1'),
             'fps': IntVar(value='30'),
@@ -118,40 +124,125 @@ class MazeOption():
         '''
         btnRun = ttk.Button(self.frameCmds, text='開始比賽', command=self.cmdRun)
         btnRun.grid(column=0, row=0)
+        btnClear = ttk.Button(self.frameCmds,
+                              text='清除結果',
+                              command=self.cmdClear)
+        btnClear.grid(column=1, row=0)
+        btnQuit = ttk.Button(self.frameCmds, text='結束程式', command=self.cmdQuit)
+        btnQuit.grid(column=2, row=0)
 
     def layoutOutputs(self):
         '''
             Outputs
         '''
-        self.scrollOutput = tk.scrolledtext.ScrolledText(self.frameOutputs)
+        self.scrollOutput = tk.scrolledtext.ScrolledText(self.frameOutputs,
+                                                         state=tk.DISABLED,
+                                                         font='Sans')
         self.scrollOutput.grid(column=0, row=0)
 
+        # MLGame 路徑
+        entryPath = ttk.Entry(self.frameOutputs,
+                              textvariable=self.options['mlgame'],
+                              state='readonly')
+        entryPath.grid(column=0, row=1, sticky=self.align_full)
+        entryPath.xview_moveto(1)
+
     def cmdSelectCar(self, event):
-        dlg = filedialog.askdirectory()
+        dlg = filedialog.askdirectory(initialdir=os.path.join(
+            self.options['mlgame'].get(), 'games', 'Maze_Car', 'ml'))
         index = int(str(event.widget).split('_')[-1])
         self.options['cars'][index].set(dlg)
+        event.widget.xview_moveto(1)
 
     def cmdRun(self):
+        '''
         for k in self.options.keys():
             if not isinstance(self.options[k], list):
                 print(k, self.options[k].get())
+        '''
 
-        process = subprocess.Popen(['top'],
-                                   shell=False,
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.STDOUT)
+        mlgame = os.path.join(self.options['mlgame'].get(), 'MLGame.py')
+        args = ['python', mlgame]
+
+        if self.options['oneshot'].get():
+            args.append('-1')
+
+        cars = []
+        for car in self.options['cars']:
+            if car.get() != '':
+                cars.append(
+                    os.path.join(os.path.basename(car.get()), 'ml_play.py'))
+            else:
+                break
+
+        args.extend([
+            '-f',
+            str(self.options['fps'].get()),
+        ])
+
+        for car in cars:
+            args.extend(['-i', car])
+
+        args.extend([
+            'Maze_Car',
+            str(len(cars)),
+            self.options['mode'].get(),
+            str(self.options['map'].get()),
+            str(self.options['frames'].get()),
+            '5',
+            'off',
+        ])
+
+        #print(args)
+
+        process = subprocess.Popen(
+            args,
+            shell=False,
+            stdout=subprocess.PIPE,
+            #stderr=subprocess.STDOUT
+        )
 
         while True:
             out = process.stdout.readline()
             if not out:
                 break
-            self.scrollOutput.insert(tk.END, out)
+            self.scrollOutput.configure(state=tk.NORMAL)
+            self.scrollOutput.insert(tk.END,
+                                     self.parseGameResult(out.decode('utf-8')))
+            self.scrollOutput.configure(state=tk.DISABLED)
             self.scrollOutput.see(tk.END)
             self.scrollOutput.update_idletasks()
 
+    def cmdClear(self):
+        self.scrollOutput.configure(state=tk.NORMAL)
+        self.scrollOutput.delete('1.0', tk.END)
+        self.scrollOutput.configure(state=tk.DISABLED)
+
+    def cmdQuit(self):
+        self.win.destroy()
+
+    def parseGameResult(self, data):
+        resList = re.compile(r"(\['1P.+frame'\])", flags=re.M)
+        resDict = re.compile(r"({'frame_used':.+\}\]})", flags=re.M)
+
+        result = ''
+
+        m = resList.search(data)
+        if m:
+            j = json.loads(m.group(1).replace("'", '"'))
+            result = os.linesep.join([result, json.dumps(j, indent=4)])
+
+        m = resDict.search(data)
+        if m:
+            j = json.loads(m.group(1).replace("'", '"'))
+            result = os.linesep.join([result, json.dumps(j, indent=4)])
+
+        return result
+
 
 def main():
-    maze = MazeOption()
+    mlgame = os.path.normpath(sys.argv[1])
+    maze = MazeOption(mlgame)
 
 
 if __name__ == "__main__":
