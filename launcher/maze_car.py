@@ -33,7 +33,7 @@ class MazeOption():
             self.win.destroy()
             sys.exit(1)
 
-        self.paia = os.path.dirname(paia)
+        self.paia = os.path.normpath(os.path.dirname(paia))
         self.mlgame = os.path.join(self.paia, 'resources', 'app', 'MLGame')
         '''
 			Option variables
@@ -220,12 +220,11 @@ class MazeOption():
 
         #print(args)
 
-        process = subprocess.Popen(
-            args,
-            shell=False,
-            stdout=subprocess.PIPE,
-            #stderr=subprocess.STDOUT
-        )
+        process = subprocess.Popen(args,
+                                   shell=False,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE,
+                                   stdin=subprocess.PIPE)
 
         while True:
             out = process.stdout.readline()
