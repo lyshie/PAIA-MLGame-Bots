@@ -1,27 +1,46 @@
 import tkinter as tk
 from tkinter import *
-from tkinter import ttk, filedialog, scrolledtext
+from tkinter import ttk, filedialog, scrolledtext, messagebox
 from PIL import Image, ImageTk
 import subprocess
 import os
+import sys
 import json
 import re
-import sys
 
 
 class MazeOption():
-    def __init__(self, mlgame):
+    def __init__(self, paia=''):
         self.win = tk.Tk()
         self.win.title("PAIA 迷宮車競賽")
         self.align_right = 'nse'
         self.align_left = 'nsw'
         self.align_full = 'nswe'
         '''
-            Option variables
+            定位 PAIA Desktop 目錄
+            1. MLGame.py   (遊戲引擎)
+            2. interpreter (Python 直譯器)
+
+            windows: PAIA-Desktop-win32-x64-2.0.0\PAIA Desktop.exe
+            linux:   /usr/lib/paia-desktop/PAIA Desktop
         '''
+        if not paia:
+            paia = filedialog.askopenfilename(
+                title='找出 PAIA Desktop 應用程式',
+                filetypes=("執行檔 {PAIA\ Desktop*}", ))
+        if not paia:
+            messagebox.showerror(message='找不到 PAIA Desktop')
+            self.win.destroy()
+            sys.exit(1)
+
+        self.paia = os.path.dirname(paia)
+        self.mlgame = os.path.join(self.paia, 'resources', 'app', 'MLGame')
+        '''
+			Option variables
+		'''
         self.imgCars = []
         self.options = {
-            'mlgame': StringVar(value=mlgame),
+            'mlgame': StringVar(value=self.mlgame),
             'mode': StringVar(value='MAZE'),
             'map': IntVar(value='1'),
             'fps': IntVar(value='30'),
@@ -30,8 +49,8 @@ class MazeOption():
             'oneshot': BooleanVar(value=True)
         }
         '''
-            Layout
-        '''
+			Layout
+		'''
         self.frameOpts = ttk.Frame(self.win)
         self.frameCars = ttk.Frame(self.win)
         self.frameCmds = ttk.Frame(self.win)
@@ -52,8 +71,8 @@ class MazeOption():
 
     def layoutOptions(self):
         '''
-            Options
-        '''
+			Options
+		'''
         # 遊戲模式
         lblMode = ttk.Label(self.frameOpts, text='遊戲模式', anchor='e')
         lblMode.grid(column=0, row=0, sticky=self.align_right)
@@ -102,10 +121,11 @@ class MazeOption():
 
     def layoutCars(self):
         '''
-            Cars
-        '''
+			Cars
+		'''
         for i in range(0, 6):
-            img = Image.open('car_%02d.png' % (i + 1, ))
+            img = Image.open(os.path.join('images',
+                                          'car_%02d.png' % (i + 1, )))
             self.imgCars.append(ImageTk.PhotoImage(img))
 
         for i, c in enumerate(self.imgCars):
@@ -120,8 +140,8 @@ class MazeOption():
 
     def layoutCommands(self):
         '''
-            Commands
-        '''
+			Commands
+		'''
         btnRun = ttk.Button(self.frameCmds, text='開始比賽', command=self.cmdRun)
         btnRun.grid(column=0, row=0)
         btnClear = ttk.Button(self.frameCmds,
@@ -133,36 +153,41 @@ class MazeOption():
 
     def layoutOutputs(self):
         '''
-            Outputs
-        '''
-        self.scrollOutput = tk.scrolledtext.ScrolledText(self.frameOutputs,
-                                                         state=tk.DISABLED,
-                                                         font='Sans')
-        self.scrollOutput.grid(column=0, row=0)
-
+			Outputs
+		'''
         # MLGame 路徑
         entryPath = ttk.Entry(self.frameOutputs,
                               textvariable=self.options['mlgame'],
                               state='readonly')
-        entryPath.grid(column=0, row=1, sticky=self.align_full)
-        entryPath.xview_moveto(1)
+        entryPath.grid(column=0, row=0, sticky=self.align_full)
+        entryPath.xview(tk.END)
+
+        # 輸出結果
+        self.scrollOutput = tk.scrolledtext.ScrolledText(self.frameOutputs,
+                                                         state=tk.DISABLED,
+                                                         height=10,
+                                                         font='Sans')
+        self.scrollOutput.grid(column=0, row=1)
 
     def cmdSelectCar(self, event):
-        dlg = filedialog.askdirectory(initialdir=os.path.join(
-            self.options['mlgame'].get(), 'games', 'Maze_Car', 'ml'))
+        ml_play_path = os.path.join(self.options['mlgame'].get(), 'games',
+                                    'Maze_Car', 'ml')
+        dlg = filedialog.askdirectory(initialdir=ml_play_path)
         index = int(str(event.widget).split('_')[-1])
         self.options['cars'][index].set(dlg)
-        event.widget.xview_moveto(1)
+        event.widget.xview(tk.END)
 
     def cmdRun(self):
         '''
-        for k in self.options.keys():
-            if not isinstance(self.options[k], list):
-                print(k, self.options[k].get())
-        '''
+		for k in self.options.keys():
+			if not isinstance(self.options[k], list):
+				print(k, self.options[k].get())
+		'''
 
-        mlgame = os.path.join(self.options['mlgame'].get(), 'MLGame.py')
-        args = ['python', mlgame]
+        mlgame_py = os.path.join(self.options['mlgame'].get(), 'MLGame.py')
+        interpreter = os.path.join(self.paia, 'resources', 'app', 'python',
+                                   'dist', 'interpreter', 'interpreter')
+        args = [interpreter, mlgame_py]
 
         if self.options['oneshot'].get():
             args.append('-1')
@@ -241,8 +266,13 @@ class MazeOption():
 
 
 def main():
-    mlgame = os.path.normpath(sys.argv[1])
-    maze = MazeOption(mlgame)
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        os.chdir(sys._MEIPASS)
+
+    if len(sys.argv) > 1:
+        maze = MazeOption(os.path.normpath(sys.argv[1]))
+    else:
+        maze = MazeOption()
 
 
 if __name__ == "__main__":
