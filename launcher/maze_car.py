@@ -13,8 +13,8 @@ class MazeOption():
     def __init__(self, paia=''):
         self.win = tk.Tk()
         self.win.title("PAIA 迷宮車競賽")
-        self.align_right = 'nse'
-        self.align_left = 'nsw'
+        self.align_right = 'e'
+        self.align_left = 'w'
         self.align_full = 'nswe'
         '''
             定位 PAIA Desktop 目錄
@@ -36,8 +36,8 @@ class MazeOption():
         self.paia = os.path.normpath(os.path.dirname(paia))
         self.mlgame = os.path.join(self.paia, 'resources', 'app', 'MLGame')
         '''
-			Option variables
-		'''
+            Option variables
+        '''
         self.imgCars = []
         self.options = {
             'mlgame': StringVar(value=self.mlgame),
@@ -49,17 +49,20 @@ class MazeOption():
             'oneshot': BooleanVar(value=True)
         }
         '''
-			Layout
-		'''
+            Layout
+        '''
         self.frameOpts = ttk.Frame(self.win)
         self.frameCars = ttk.Frame(self.win)
         self.frameCmds = ttk.Frame(self.win)
         self.frameOutputs = ttk.Frame(self.win)
 
-        self.frameOpts.grid(column=0, row=0)
-        self.frameCars.grid(column=1, row=0)
+        self.frameOpts.grid(column=0, row=0, sticky=self.align_right)
+        self.frameCars.grid(column=1, row=0, sticky=self.align_left)
         self.frameCmds.grid(column=0, row=1, columnspan=2)
-        self.frameOutputs.grid(column=0, row=2, columnspan=2)
+        self.frameOutputs.grid(column=0,
+                               row=2,
+                               columnspan=2,
+                               sticky=self.align_full)
 
         self.layoutOptions()
         self.layoutCars()
@@ -67,12 +70,20 @@ class MazeOption():
         self.layoutOutputs()
 
         self.win.update_idletasks()
+
+        # auto-resize frame
+        self.win.columnconfigure(0, weight=1)
+        self.win.columnconfigure(1, weight=1)
+        self.win.rowconfigure(0, weight=0)
+        self.win.rowconfigure(1, weight=0)
+        self.win.rowconfigure(2, weight=1)
+
         self.win.mainloop()
 
     def layoutOptions(self):
         '''
-			Options
-		'''
+            Options
+        '''
         # 遊戲模式
         lblMode = ttk.Label(self.frameOpts, text='遊戲模式', anchor='e')
         lblMode.grid(column=0, row=0, sticky=self.align_right)
@@ -121,8 +132,8 @@ class MazeOption():
 
     def layoutCars(self):
         '''
-			Cars
-		'''
+            Cars
+        '''
         for i in range(0, 6):
             img = Image.open(os.path.join('images',
                                           'car_%02d.png' % (i + 1, )))
@@ -140,8 +151,8 @@ class MazeOption():
 
     def layoutCommands(self):
         '''
-			Commands
-		'''
+            Commands
+        '''
         btnRun = ttk.Button(self.frameCmds, text='開始比賽', command=self.cmdRun)
         btnRun.grid(column=0, row=0)
         btnClear = ttk.Button(self.frameCmds,
@@ -153,12 +164,13 @@ class MazeOption():
 
     def layoutOutputs(self):
         '''
-			Outputs
-		'''
+            Outputs
+        '''
         # MLGame 路徑
         entryPath = ttk.Entry(self.frameOutputs,
                               textvariable=self.options['mlgame'],
-                              state='readonly')
+                              state='readonly',
+                              justify=tk.CENTER)
         entryPath.grid(column=0, row=0, sticky=self.align_full)
         entryPath.xview(tk.END)
 
@@ -166,23 +178,29 @@ class MazeOption():
         self.scrollOutput = tk.scrolledtext.ScrolledText(self.frameOutputs,
                                                          state=tk.DISABLED,
                                                          height=10,
-                                                         font='Sans')
-        self.scrollOutput.grid(column=0, row=1)
+                                                         font='TkFixedFont')
+        self.scrollOutput.grid(column=0, row=1, sticky=self.align_full)
+
+        # auto-resize
+        self.frameOutputs.rowconfigure(0, weight=0)
+        self.frameOutputs.rowconfigure(1, weight=1)
+        self.frameOutputs.columnconfigure(0, weight=1)
 
     def cmdSelectCar(self, event):
         ml_play_path = os.path.join(self.options['mlgame'].get(), 'games',
                                     'Maze_Car', 'ml')
         dlg = filedialog.askdirectory(initialdir=ml_play_path)
+        dlg = os.path.basename(dlg)
         index = int(str(event.widget).split('_')[-1])
         self.options['cars'][index].set(dlg)
         event.widget.xview(tk.END)
 
     def cmdRun(self):
         '''
-		for k in self.options.keys():
-			if not isinstance(self.options[k], list):
-				print(k, self.options[k].get())
-		'''
+        for k in self.options.keys():
+            if not isinstance(self.options[k], list):
+                print(k, self.options[k].get())
+        '''
 
         mlgame_py = os.path.join(self.options['mlgame'].get(), 'MLGame.py')
         interpreter = os.path.join(self.paia, 'resources', 'app', 'python',
