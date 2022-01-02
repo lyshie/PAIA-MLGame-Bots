@@ -9,7 +9,7 @@ import json
 import re
 
 
-class MazeOption():
+class MazeLauncher():
     def __init__(self, paia=''):
         self.win = tk.Tk()
         self.win.title("PAIA 迷宮車競賽")
@@ -134,9 +134,10 @@ class MazeOption():
         '''
             Cars
         '''
+        path = os.path.dirname(os.path.realpath(__file__))
         for i in range(0, 6):
-            img = Image.open(os.path.join('images',
-                                          'car_%02d.png' % (i + 1, )))
+            img = Image.open(
+                os.path.join(path, 'images', 'car_%02d.png' % (i + 1, )))
             self.imgCars.append(ImageTk.PhotoImage(img))
 
         for i, c in enumerate(self.imgCars):
@@ -287,9 +288,14 @@ def main():
         os.chdir(sys._MEIPASS)
 
     if len(sys.argv) > 1:
-        maze = MazeOption(os.path.normpath(sys.argv[1]))
+        maze = MazeLauncher(os.path.normpath(sys.argv[1]))
     else:
-        maze = MazeOption()
+        if os.path.isfile('PAIA Desktop') or os.path.isfile(
+                'PAIA Desktop.exe'):
+            maze = MazeLauncher(
+                os.path.join(os.path.dirname(__file__), 'PAIA Desktop'))
+        else:
+            maze = MazeLauncher()
 
 
 if __name__ == "__main__":
