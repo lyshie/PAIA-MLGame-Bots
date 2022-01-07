@@ -11,7 +11,10 @@ $ source build_env/bin/activate.fish
 
 $ pip install pyinstaller
 
-$ pip install box2d-py pygame sklearn matplotlib pynput
+$ wget https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/Paia-Desktop/master/requirements.txt
+
+$ pip install --upgrade -r requirements.txt
+$ pip install --upgrade pyinstaller
 
 $ wget https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/Paia-Desktop/master/python/interpreter.py
 
