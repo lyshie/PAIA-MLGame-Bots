@@ -16,7 +16,7 @@ $ wget https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/Paia-Desktop/mast
 $ pip install --upgrade -r requirements.txt
 $ pip install --upgrade pyinstaller
 
-$ wget https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/Paia-Desktop/master/python/interpreter.py
+$ wget https://raw.githubusercontent.com/lyshie/PAIA-MLGame-Bots/main/launcher/interpreter.py
 
 $ pyinstaller --clean                      \
               --hidden-import pygame       \
