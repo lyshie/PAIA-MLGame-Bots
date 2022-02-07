@@ -1,0 +1,486 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <variables>
+    <variable id="bZF*G~d.@0t%P5b4kn6Y">特徵資料</variable>
+    <variable id="*G.u3bGoAmejpXzu1}a*">馬達轉速</variable>
+    <variable id="8$eDePw^D_FR12K5uZM2">資料</variable>
+    <variable id="m8DZeq3d#O3Al]~q4rRY">j</variable>
+    <variable id=";)wb[FYrY41+9YxciN_~">訓練資料</variable>
+    <variable id="wx,l3ufY?ZIJd()G,nfs">測試資料</variable>
+    <variable id="IZ@tFx1uU%(`|d/CFCqQ">訓練目標</variable>
+    <variable id="csp/?Vmg5dHT5ce4Uov2">測試目標</variable>
+    <variable id="ke3~%KA+=lNKhxN)^L1n">模型</variable>
+    <variable id="T|S^@/2[xLY@Sue1-oe-">訓練結果</variable>
+    <variable id="|V=ksvjTJ)wWCiHrto[)">測試結果</variable>
+  </variables>
+  <block type="variables_set" id="W)mo|oY|FdT!+$qINp6u" x="237" y="12">
+    <field name="VAR" id="bZF*G~d.@0t%P5b4kn6Y">特徵資料</field>
+    <value name="VALUE">
+      <block type="lists_create_with" id="]i!h!Ni@]UEP5yY]Oc`~">
+        <mutation items="0"></mutation>
+      </block>
+    </value>
+    <next>
+      <block type="variables_set" id="$VnFN+#=9VaQUvaIP!p2">
+        <field name="VAR" id="*G.u3bGoAmejpXzu1}a*">馬達轉速</field>
+        <value name="VALUE">
+          <block type="lists_create_with" id="Vn9!NAz=lV45a5G_`E5y">
+            <mutation items="0"></mutation>
+          </block>
+        </value>
+        <next>
+          <block type="file_csv_load" id="u)3#B^m.SND|$:R}dryr">
+            <field name="DELIMITER">,</field>
+            <value name="FILENAME">
+              <shadow type="text" id="F32u{yvYO2Ip+^L`W;LR">
+                <field name="TEXT">檔案名稱</field>
+              </shadow>
+              <block type="text" id="[:.jTA/-hF2/,],0`czF">
+                <field name="TEXT">all</field>
+              </block>
+            </value>
+            <value name="OBJECT">
+              <block type="variables_get" id="=ARBb/dpMB-iG]Fd.hor">
+                <field name="VAR" id="8$eDePw^D_FR12K5uZM2">資料</field>
+              </block>
+            </value>
+            <next>
+              <block type="variables_set" id="^T*ncQ1Uz)ldZ8k1e(Zg">
+                <field name="VAR" id="8$eDePw^D_FR12K5uZM2">資料</field>
+                <value name="VALUE">
+                  <block type="lists_getSublist" id="GrsL|qamw4a||z!@$]v5">
+                    <mutation at1="true" at2="true"></mutation>
+                    <field name="WHERE1">FROM_START</field>
+                    <field name="WHERE2">FROM_START</field>
+                    <value name="LIST">
+                      <block type="variables_get" id="sGPq9)Pi|:zI3E3Yug-^">
+                        <field name="VAR" id="8$eDePw^D_FR12K5uZM2">資料</field>
+                      </block>
+                    </value>
+                    <value name="AT1">
+                      <block type="math_number" id="AL87$dx%wGvKvU3-p9E{">
+                        <field name="NUM">2</field>
+                      </block>
+                    </value>
+                    <value name="AT2">
+                      <block type="math_number" id="@#hMgZhT#K{:#5iw.eN}">
+                        <field name="NUM">-1</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <next>
+                  <block type="controls_forEach" id="U1^X4$T1wL_Uu}05e$|m">
+                    <field name="VAR" id="m8DZeq3d#O3Al]~q4rRY">j</field>
+                    <value name="LIST">
+                      <block type="variables_get" id="SuC|ZS{0b7~1#:#/(xAk">
+                        <field name="VAR" id="8$eDePw^D_FR12K5uZM2">資料</field>
+                      </block>
+                    </value>
+                    <statement name="DO">
+                      <block type="text_print" id="a3eW?ZzV.q)Q6@g9Uslo" disabled="true">
+                        <value name="TEXT">
+                          <shadow type="text">
+                            <field name="TEXT">abc</field>
+                          </shadow>
+                          <block type="variables_get" id="4bnF$V.r5S2}3Co4P!A=">
+                            <field name="VAR" id="m8DZeq3d#O3Al]~q4rRY">j</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="lists_insertIndex" id="v8~+TO=vmn!dRCXbq!_:">
+                            <mutation at="false"></mutation>
+                            <field name="WHERE">LAST</field>
+                            <value name="TO">
+                              <block type="lists_create_with" id="pB/vDvOpnOtvOk_$uKQ+">
+                                <mutation items="5"></mutation>
+                                <value name="ADD0">
+                                  <block type="math_convert" id="[kf)]olmp.zt^X[)=wra">
+                                    <field name="TYPE">float</field>
+                                    <value name="STR">
+                                      <block type="lists_getIndex" id="Cwywc%/rspf0V#U6^7jd">
+                                        <mutation statement="false" at="true"></mutation>
+                                        <field name="MODE">GET</field>
+                                        <field name="WHERE">FROM_START</field>
+                                        <value name="VALUE">
+                                          <block type="variables_get" id="[|~Y!Xs~.WAXmU/v87tU">
+                                            <field name="VAR" id="m8DZeq3d#O3Al]~q4rRY">j</field>
+                                          </block>
+                                        </value>
+                                        <value name="AT">
+                                          <block type="math_number" id="20rcs,_9rM@S]oXtHb6_">
+                                            <field name="NUM">1</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                                <value name="ADD1">
+                                  <block type="math_convert" id=".E@Rimj$/~oHc](hRux|">
+                                    <field name="TYPE">float</field>
+                                    <value name="STR">
+                                      <block type="lists_getIndex" id="XZr^SW6Gh?]:`(yQ8M#7">
+                                        <mutation statement="false" at="true"></mutation>
+                                        <field name="MODE">GET</field>
+                                        <field name="WHERE">FROM_START</field>
+                                        <value name="VALUE">
+                                          <block type="variables_get" id="bl1i]heJ(:R2pt{IW:/W">
+                                            <field name="VAR" id="m8DZeq3d#O3Al]~q4rRY">j</field>
+                                          </block>
+                                        </value>
+                                        <value name="AT">
+                                          <block type="math_number" id="%T9o|KO~m^D@aHA+9W-H">
+                                            <field name="NUM">2</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                                <value name="ADD2">
+                                  <block type="math_convert" id="6HLj1AV;gP!#^=1p2(~/">
+                                    <field name="TYPE">float</field>
+                                    <value name="STR">
+                                      <block type="lists_getIndex" id="sYh.}=7*,pxkD]wO*[DR">
+                                        <mutation statement="false" at="true"></mutation>
+                                        <field name="MODE">GET</field>
+                                        <field name="WHERE">FROM_START</field>
+                                        <value name="VALUE">
+                                          <block type="variables_get" id="X`A-i=F_Fiqwn1rVk#TI">
+                                            <field name="VAR" id="m8DZeq3d#O3Al]~q4rRY">j</field>
+                                          </block>
+                                        </value>
+                                        <value name="AT">
+                                          <block type="math_number" id="E{#|nMTo$ijL8Ns6kGJF">
+                                            <field name="NUM">3</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                                <value name="ADD3">
+                                  <block type="math_convert" id="Y5G0RL][~!ks6*Bs1T{N">
+                                    <field name="TYPE">float</field>
+                                    <value name="STR">
+                                      <block type="lists_getIndex" id="0PZ!LBQ^ssywyO+t;Uu6">
+                                        <mutation statement="false" at="true"></mutation>
+                                        <field name="MODE">GET</field>
+                                        <field name="WHERE">FROM_START</field>
+                                        <value name="VALUE">
+                                          <block type="variables_get" id="{-2,1|S+,R:p.~kJ+j3}">
+                                            <field name="VAR" id="m8DZeq3d#O3Al]~q4rRY">j</field>
+                                          </block>
+                                        </value>
+                                        <value name="AT">
+                                          <block type="math_number" id="fYN#sL!O82bfvY[/,=wU">
+                                            <field name="NUM">4</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                                <value name="ADD4">
+                                  <block type="math_convert" id="iz-Pa__?z)NNQKrps{gJ">
+                                    <field name="TYPE">float</field>
+                                    <value name="STR">
+                                      <block type="lists_getIndex" id="M^L!mjLUwu8QTvsiE4dw">
+                                        <mutation statement="false" at="true"></mutation>
+                                        <field name="MODE">GET</field>
+                                        <field name="WHERE">FROM_START</field>
+                                        <value name="VALUE">
+                                          <block type="variables_get" id="t}RTFLxVBNe]cqsj8]5l">
+                                            <field name="VAR" id="m8DZeq3d#O3Al]~q4rRY">j</field>
+                                          </block>
+                                        </value>
+                                        <value name="AT">
+                                          <block type="math_number" id="!8XB=mOV0%E+:FlhW-SH">
+                                            <field name="NUM">5</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <value name="LIST">
+                              <block type="variables_get" id=",O.7HqP:C17]fT/(Y`.e">
+                                <field name="VAR" id="bZF*G~d.@0t%P5b4kn6Y">特徵資料</field>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="lists_insertIndex" id="P:Q]LtyHq6D{*g1GGs/0">
+                                <mutation at="false"></mutation>
+                                <field name="WHERE">LAST</field>
+                                <value name="TO">
+                                  <block type="lists_create_with" id="y++PuSB_.PBy92;Yf4#p">
+                                    <mutation items="2"></mutation>
+                                    <value name="ADD0">
+                                      <block type="math_convert" id="XHhc0Hd0b,Ch%aS+7)hF">
+                                        <field name="TYPE">float</field>
+                                        <value name="STR">
+                                          <block type="lists_getIndex" id="(1)b1cZKEjj1eJ@_.rpy">
+                                            <mutation statement="false" at="true"></mutation>
+                                            <field name="MODE">GET</field>
+                                            <field name="WHERE">FROM_START</field>
+                                            <value name="VALUE">
+                                              <block type="variables_get" id="~qvUS-pyv06i{,Mnie-D">
+                                                <field name="VAR" id="m8DZeq3d#O3Al]~q4rRY">j</field>
+                                              </block>
+                                            </value>
+                                            <value name="AT">
+                                              <block type="math_number" id="w$FJDvk+re$h{%iQ^58;">
+                                                <field name="NUM">6</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <value name="ADD1">
+                                      <block type="math_convert" id="q!L3aO/*m.:(}t^n6Jq5">
+                                        <field name="TYPE">float</field>
+                                        <value name="STR">
+                                          <block type="lists_getIndex" id="lIp6BxHjRR0x5,6%*Ow{">
+                                            <mutation statement="false" at="true"></mutation>
+                                            <field name="MODE">GET</field>
+                                            <field name="WHERE">FROM_START</field>
+                                            <value name="VALUE">
+                                              <block type="variables_get" id="9ch!15d|A?^:H_r]?kR1">
+                                                <field name="VAR" id="m8DZeq3d#O3Al]~q4rRY">j</field>
+                                              </block>
+                                            </value>
+                                            <value name="AT">
+                                              <block type="math_number" id="j!#lmxr9bAQ+bp9`Vu7_">
+                                                <field name="NUM">7</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                                <value name="LIST">
+                                  <block type="variables_get" id="A8TcFRv1tSi-%A45zd/R">
+                                    <field name="VAR" id="*G.u3bGoAmejpXzu1}a*">馬達轉速</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </statement>
+                    <next>
+                      <block type="text_print" id="G4*.v*@XYKt`,IHQ9%[*" disabled="true">
+                        <value name="TEXT">
+                          <shadow type="text" id="ccg-`.8T7eJ}sp*tghar">
+                            <field name="TEXT">abc</field>
+                          </shadow>
+                          <block type="lists_length" id=";]=0dhkpG4#E%8~S((iD">
+                            <value name="VALUE">
+                              <block type="variables_get" id="tlh(V+/?y{5s;{pzNRff">
+                                <field name="VAR" id="bZF*G~d.@0t%P5b4kn6Y">特徵資料</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="text_print" id="hw3AE~K[%P!P%)N%l1xy" disabled="true">
+                            <value name="TEXT">
+                              <shadow type="text">
+                                <field name="TEXT">abc</field>
+                              </shadow>
+                              <block type="lists_length" id="(|);p*4#PvJ3dJw[VI83">
+                                <value name="VALUE">
+                                  <block type="variables_get" id="(xvh?3]-bv]]2q.X.Dx}">
+                                    <field name="VAR" id="*G.u3bGoAmejpXzu1}a*">馬達轉速</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="model_train_test_split" id="y^![)e(?WbjwXY//^dn_">
+                                <field name="SHUFFLE">True</field>
+                                <value name="X">
+                                  <block type="variables_get" id="Map{uYn(iJd~/Vy@M%?j">
+                                    <field name="VAR" id="bZF*G~d.@0t%P5b4kn6Y">特徵資料</field>
+                                  </block>
+                                </value>
+                                <value name="Y">
+                                  <block type="variables_get" id="#wy{F15UEKG%{jtu8I0h">
+                                    <field name="VAR" id="*G.u3bGoAmejpXzu1}a*">馬達轉速</field>
+                                  </block>
+                                </value>
+                                <value name="TEST_SIZE">
+                                  <shadow type="math_number" id="?|W~MJ7:a?X4a#uZzBbs">
+                                    <field name="NUM">0.2</field>
+                                  </shadow>
+                                </value>
+                                <value name="TRAIN_DATA">
+                                  <block type="variables_get" id="~(S(_yhMwNIzt73-j6B+">
+                                    <field name="VAR" id=";)wb[FYrY41+9YxciN_~">訓練資料</field>
+                                  </block>
+                                </value>
+                                <value name="TEST_DATA">
+                                  <block type="variables_get" id="DG0wesc0b{Iu$M`*tg{+">
+                                    <field name="VAR" id="wx,l3ufY?ZIJd()G,nfs">測試資料</field>
+                                  </block>
+                                </value>
+                                <value name="TRAIN_TARGET">
+                                  <block type="variables_get" id="EYxb5{{b[3`Lt8J,08U}">
+                                    <field name="VAR" id="IZ@tFx1uU%(`|d/CFCqQ">訓練目標</field>
+                                  </block>
+                                </value>
+                                <value name="TEST_TARGET">
+                                  <block type="variables_get" id="my//Qc.6#~Chb:,h`?,,">
+                                    <field name="VAR" id="csp/?Vmg5dHT5ce4Uov2">測試目標</field>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="variables_set" id="BW]Z+D|5FZyS:Vb]JXj4">
+                                    <field name="VAR" id="ke3~%KA+=lNKhxN)^L1n">模型</field>
+                                    <value name="VALUE">
+                                      <block type="model_create_regression" id="LmMmYjCd)?Je}R^tAmXu">
+                                        <field name="MODEL">KNeighborsRegressor</field>
+                                        <field name="PARAM_K">5</field>
+                                        <field name="PARAM_WEIGHTS">uniform</field>
+                                        <field name="PARAM_ALGORITHM">auto</field>
+                                      </block>
+                                    </value>
+                                    <next>
+                                      <block type="model_train" id="a7,$$,?-y6hL2Ug5$i%W">
+                                        <value name="X">
+                                          <block type="variables_get" id="3*Z4RswB4zD*b;e[L`N[">
+                                            <field name="VAR" id=";)wb[FYrY41+9YxciN_~">訓練資料</field>
+                                          </block>
+                                        </value>
+                                        <value name="Y">
+                                          <block type="variables_get" id="ySOr;UtpTJLHM5U;qv)S">
+                                            <field name="VAR" id="IZ@tFx1uU%(`|d/CFCqQ">訓練目標</field>
+                                          </block>
+                                        </value>
+                                        <value name="MODEL">
+                                          <block type="variables_get" id="lwR(q]XjzdO3=yy*R5b{">
+                                            <field name="VAR" id="ke3~%KA+=lNKhxN)^L1n">模型</field>
+                                          </block>
+                                        </value>
+                                        <next>
+                                          <block type="file_save" id="Z[M#NNI@Ew8y^VrB]_Y!">
+                                            <value name="OBJECT">
+                                              <block type="variables_get" id="6F6$~RQ_^npf~;@O_Eo)">
+                                                <field name="VAR" id="ke3~%KA+=lNKhxN)^L1n">模型</field>
+                                              </block>
+                                            </value>
+                                            <value name="FILENAME">
+                                              <block type="text" id="te{Ek^bJgl~glNn80UeN">
+                                                <field name="TEXT">model</field>
+                                              </block>
+                                            </value>
+                                            <next>
+                                              <block type="variables_set" id="P*E.*h=HAu#n3D_S$}^H">
+                                                <field name="VAR" id="T|S^@/2[xLY@Sue1-oe-">訓練結果</field>
+                                                <value name="VALUE">
+                                                  <block type="model_predict" id=";S#DvH+u:9O-**kojIu=">
+                                                    <value name="MODEL">
+                                                      <block type="variables_get" id="W6sps7ad=s9@=?Qjo}$/">
+                                                        <field name="VAR" id="ke3~%KA+=lNKhxN)^L1n">模型</field>
+                                                      </block>
+                                                    </value>
+                                                    <value name="X">
+                                                      <block type="variables_get" id="6I@#(Eoxshf%A$0xW#l`">
+                                                        <field name="VAR" id=";)wb[FYrY41+9YxciN_~">訓練資料</field>
+                                                      </block>
+                                                    </value>
+                                                  </block>
+                                                </value>
+                                                <next>
+                                                  <block type="text_print" id="ey+qtW4ovfF}puE1/9Ri">
+                                                    <value name="TEXT">
+                                                      <shadow type="text">
+                                                        <field name="TEXT">abc</field>
+                                                      </shadow>
+                                                      <block type="model_evaluate_regression" id="]{B3TLyT%0dH{s$Toq~-">
+                                                        <field name="FUNC">MAE</field>
+                                                        <value name="TRUE">
+                                                          <block type="variables_get" id="}fm3tpgNr~c_mCHXrDya">
+                                                            <field name="VAR" id="IZ@tFx1uU%(`|d/CFCqQ">訓練目標</field>
+                                                          </block>
+                                                        </value>
+                                                        <value name="PRED">
+                                                          <block type="variables_get" id="w#,M)4.~faf*e2|_c~/y">
+                                                            <field name="VAR" id="T|S^@/2[xLY@Sue1-oe-">訓練結果</field>
+                                                          </block>
+                                                        </value>
+                                                      </block>
+                                                    </value>
+                                                    <next>
+                                                      <block type="variables_set" id="@=GdNpFb6:b,+:h%PJH[">
+                                                        <field name="VAR" id="|V=ksvjTJ)wWCiHrto[)">測試結果</field>
+                                                        <value name="VALUE">
+                                                          <block type="model_predict" id="PH$k~Y4gLDPyAuP7R7bh">
+                                                            <value name="MODEL">
+                                                              <block type="variables_get" id="y*%-MjD;amu4qI{49L+f">
+                                                                <field name="VAR" id="ke3~%KA+=lNKhxN)^L1n">模型</field>
+                                                              </block>
+                                                            </value>
+                                                            <value name="X">
+                                                              <block type="variables_get" id="btq$rQ$@(##bo0PVB5IV">
+                                                                <field name="VAR" id="wx,l3ufY?ZIJd()G,nfs">測試資料</field>
+                                                              </block>
+                                                            </value>
+                                                          </block>
+                                                        </value>
+                                                        <next>
+                                                          <block type="text_print" id=",KT:o_hzH.~AqrcOQp;F">
+                                                            <value name="TEXT">
+                                                              <shadow type="text" id="d*:Kz3NT{foAQ_W%!Zi{">
+                                                                <field name="TEXT">abc</field>
+                                                              </shadow>
+                                                              <block type="model_evaluate_regression" id=".4vTb}JgL#9K,J;]m!!(">
+                                                                <field name="FUNC">MAE</field>
+                                                                <value name="TRUE">
+                                                                  <block type="variables_get" id="s)wJ%6p0=PZq:a!A4Enu">
+                                                                    <field name="VAR" id="csp/?Vmg5dHT5ce4Uov2">測試目標</field>
+                                                                  </block>
+                                                                </value>
+                                                                <value name="PRED">
+                                                                  <block type="variables_get" id="@!lVg4DT3Rg/q8}P=T~R">
+                                                                    <field name="VAR" id="|V=ksvjTJ)wWCiHrto[)">測試結果</field>
+                                                                  </block>
+                                                                </value>
+                                                              </block>
+                                                            </value>
+                                                          </block>
+                                                        </next>
+                                                      </block>
+                                                    </next>
+                                                  </block>
+                                                </next>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>
