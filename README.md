@@ -16,3 +16,18 @@
      ```
      $ python mazecar_validator.py -f ml_play.py
      ```
+  * 合併 CSV 檔案 (feature*.csv 與 target*.csv)
+    ```
+    $ rm temp.csv all.csv;
+      for i in (seq 1 6);
+          dos2unix "feature$i.csv";
+          dos2unix "target$i.csv";
+          paste -d, "feature$i.csv" "target$i.csv" >> temp.csv;
+      end;
+      cat headers temp.csv > all.csv;
+      cp all.csv /tmp/all.csv
+    ```
+    ```
+    $ cat headers
+    "L","LF","F","RF","R","L-W","R-W"
+    ```
