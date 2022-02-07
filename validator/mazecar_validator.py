@@ -40,7 +40,7 @@ class Validator():
         pat = re.compile(r"\w+ \s+ = \s+ \w+\.predict\(.+?\)", re.X)
         matches = pat.findall(self._content)
         if matches:
-            return "[OK] 有使用模型預測\n\t{}".format("\n\t".join(matches))
+            return "[ OK ] 有使用模型預測\n\t{}".format("\n\t".join(matches))
         else:
             return "[FAIL] 未使用模型預測"
 
@@ -53,7 +53,7 @@ class Validator():
             r"with \s+ open \s*? \( .+? '.pickle' .+? \) \s+ as \s+ f:", re.X)
         matches = pat.findall(self._content)
         if matches:
-            return "[OK] 有載入模型 (model.pickle)\n\t{}".format(
+            return "[ OK ] 有載入模型 (model.pickle)\n\t{}".format(
                 "\n\t".join(matches))
         else:
             return "[FAIL] 未載入模型 (model.pickle)"
@@ -68,13 +68,17 @@ class Validator():
         if matches:
             return "[WARN] 使用按鍵\n\t{}".format("\n\t".join(matches))
         else:
-            return "[OK] 未使用按鍵"
+            return "[ OK ] 未使用按鍵"
 
 
 def main():
     args = argparse.ArgumentParser()
-    args.add_argument("-f", "--file", help="ml_play.py")
+    args.add_argument("-f", "--file", help="輸入檔案 (ml_play.py)")
+    args.add_argument("-q", "--quiet", action="store_true", help="隱藏資訊")
     options = args.parse_args()
+
+    if not options.quiet:
+        print("檢查檔案 {}".format(options.file))
 
     # 讀入 ml_play.py 原始碼
     content = ''
