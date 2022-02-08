@@ -25,4 +25,18 @@ $ pyinstaller --clean                      \
               --hidden-import matplotlib   \
               --hidden-import pynput       \
               interpreter.py
+
+Python 3.10.2 (Fedora 35)
+$ pyinstaller --clean                      \
+              --hidden-import pygame       \
+              --hidden-import Box2D        \
+              --hidden-import sklearn      \
+              --hidden-import matplotlib   \
+              --hidden-import pynput       \
+              --hidden-import sklearn.utils._typedefs            \
+              --hidden-import sklearn.neural_network             \
+              --hidden-import sklearn.ensemble                   \
+              --hidden-import sklearn.neighbors._partition_nodes \
+              --exclude-module _bootlocale                       \
+              interpreter.py
 ```
