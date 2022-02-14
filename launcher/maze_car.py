@@ -227,13 +227,20 @@ class MazeLauncher():
         for car in cars:
             args.extend(['-i', car])
 
+        # 修改自 MLGame 9.2.*
         args.extend([
             'Maze_Car',
+            '--user_num',
             str(len(cars)),
+            '--game_type',
             self.options['mode'].get(),
+            '--map',
             str(self.options['map'].get()),
+            '--time_to_play',
             str(self.options['frames'].get()),
+            '--sensor_num',
             '5',
+            '--sound',
             'off',
         ])
 
