@@ -253,12 +253,17 @@ class MazeLauncher():
                                    stdin=subprocess.PIPE)
 
         while True:
+            err = process.stderr.readline()
             out = process.stdout.readline()
-            if not out:
+            if not out and not err:
                 break
+
             self.scrollOutput.configure(state=tk.NORMAL)
-            self.scrollOutput.insert(tk.END,
-                                     self.parseGameResult(out.decode('utf-8')))
+            if err:
+                self.scrollOutput.insert(tk.END, err.decode('utf-8'))
+            if out:
+                self.scrollOutput.insert(
+                    tk.END, self.parseGameResult(out.decode('utf-8')))
             self.scrollOutput.configure(state=tk.DISABLED)
             self.scrollOutput.see(tk.END)
             self.scrollOutput.update_idletasks()
