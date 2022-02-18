@@ -35,6 +35,8 @@ class MazeLauncher():
 
         self.paia = os.path.normpath(os.path.dirname(paia))
         self.mlgame = os.path.join(self.paia, 'resources', 'app', 'MLGame')
+        self.valid_cars = self.enumCars()
+        print(self.valid_cars)
         '''
             Option variables
         '''
@@ -143,12 +145,18 @@ class MazeLauncher():
         for i, c in enumerate(self.imgCars):
             lblCar = ttk.Label(self.frameCars, image=c)
             lblCar.grid(column=0, row=i)
+            # 自動列舉合法車輛程式 ml_play.py
+            optCar = ttk.OptionMenu(self.frameCars, self.options['cars'][i],
+                                    '', *self.valid_cars)
+            optCar.grid(column=1, row=i)
+            '''
             entryCar = ttk.Entry(self.frameCars,
                                  name='car_%d' % (i),
                                  state='readonly',
                                  textvariable=self.options['cars'][i])
             entryCar.grid(column=1, row=i)
             entryCar.bind('<ButtonPress-1>', self.cmdSelectCar)
+            '''
 
     def layoutCommands(self):
         '''
@@ -188,6 +196,8 @@ class MazeLauncher():
         self.frameOutputs.columnconfigure(0, weight=1)
 
     def cmdSelectCar(self, event):
+        ''' 從資料夾挑選車輛
+        '''
         ml_play_path = os.path.join(self.options['mlgame'].get(), 'games',
                                     'Maze_Car', 'ml')
         dlg = filedialog.askdirectory(initialdir=ml_play_path)
@@ -293,6 +303,19 @@ class MazeLauncher():
             result = os.linesep.join([result, json.dumps(j, indent=4)])
 
         return result
+
+    def enumCars(self):
+        cars = ['']
+
+        # 機器學習程式路徑
+        ml_path = os.path.join(self.mlgame, 'games', 'Maze_Car', 'ml')
+        # 列舉出所有 ml 下的資料夾，檢查是否存在 ml_play.py
+        for c in sorted(os.listdir(ml_path)):
+            ml_file = os.path.join(ml_path, c, 'ml_play.py')
+            if os.path.isfile(ml_file):
+                cars.append(c)
+
+        return cars
 
 
 def main():
