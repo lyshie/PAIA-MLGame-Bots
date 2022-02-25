@@ -254,7 +254,7 @@ class MazeLauncher():
             'off',
         ])
 
-        #print(args)
+        #print(" ".join(args))
 
         process = subprocess.Popen(args,
                                    shell=False,

@@ -28,14 +28,18 @@ class MLPlay:
         if self.front < 0:
             return self.motor(255, 255)
 
-        if self.left_front <= 5.656 and self.front <= 4:    ''' 遇到圍牆轉角 '''
+        if self.left_front <= 5.656 and self.front <= 4:
+            ''' 遇到圍牆轉角 '''
             return self.motor(255, -65)
-        elif self.left > 1 and self.left_front > 1.414:     ''' 未靠左邊 '''
+        elif self.left > 1 and self.left_front > 1.414:
+            ''' 未靠左邊 '''
             return self.motor(225, 255)
-        elif self.left <= 0 and self.left_front > 2.828:    ''' 遇到路口轉角 '''
+        elif self.left <= 0 and self.left_front > 2.828:
+            ''' 遇到路口轉角 '''
             return self.motor(-145, 255)
-        elif self.front <= 0:                               ''' 卡住脫困 '''
-            self.motor(-135, 255)
+        elif self.front <= 0:
+            ''' 卡住脫困 '''
+            return self.motor(-135, 255)
         else:
             return self.motor(255, 255)
 
