@@ -7,6 +7,7 @@ import os
 import sys
 import json
 import re
+from datetime import datetime
 
 
 class MazeLauncher():
@@ -206,13 +207,26 @@ class MazeLauncher():
         self.options['cars'][index].set(dlg)
         event.widget.xview(tk.END)
 
+    def getTicket(self):
+        now = datetime.now()
+        ''' 2022-02-25_11-28-57 '''
+        fn = now.strftime("%Y-%m-%d_%H-%M-%S")
+
+        return fn
+
     def cmdRun(self):
+        '''
+            logs/2022-02-25_11-28-57
+        '''
+        if not os.path.isdir('logs'):
+            os.mkdir('logs')
+
+        ticket = os.path.join('logs', self.getTicket())
         '''
         for k in self.options.keys():
             if not isinstance(self.options[k], list):
                 print(k, self.options[k].get())
         '''
-
         mlgame_py = os.path.join(self.options['mlgame'].get(), 'MLGame.py')
         interpreter = os.path.join(self.paia, 'resources', 'app', 'python',
                                    'dist', 'interpreter', 'interpreter')
@@ -253,7 +267,10 @@ class MazeLauncher():
             '--sound',
             'off',
         ])
-
+        ''' logs/2022-02-25_11-28-57.args
+        '''
+        with open('{}.args'.format(ticket), "w+") as f:
+            f.write(" ".join(args))
         #print(" ".join(args))
 
         process = subprocess.Popen(args,
@@ -261,22 +278,28 @@ class MazeLauncher():
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE,
                                    stdin=subprocess.PIPE)
+        ''' logs/2022-02-25_11-28-57.out
+            logs/2022-02-25_11-28-57.err
+        '''
+        with open('{}.out'.format(ticket),
+                  "wb+") as fout, open('{}.err'.format(ticket), "wb+") as ferr:
+            while True:
+                err = process.stderr.readline()
+                out = process.stdout.readline()
+                if not out and not err:
+                    break
 
-        while True:
-            err = process.stderr.readline()
-            out = process.stdout.readline()
-            if not out and not err:
-                break
-
-            self.scrollOutput.configure(state=tk.NORMAL)
-            if err:
-                self.scrollOutput.insert(tk.END, err.decode('utf-8'))
-            if out:
-                self.scrollOutput.insert(
-                    tk.END, self.parseGameResult(out.decode('utf-8')))
-            self.scrollOutput.configure(state=tk.DISABLED)
-            self.scrollOutput.see(tk.END)
-            self.scrollOutput.update_idletasks()
+                self.scrollOutput.configure(state=tk.NORMAL)
+                if err:
+                    ferr.write(err)
+                    self.scrollOutput.insert(tk.END, err.decode('utf-8'))
+                if out:
+                    fout.write(out)
+                    self.scrollOutput.insert(
+                        tk.END, self.parseGameResult(out.decode('utf-8')))
+                self.scrollOutput.configure(state=tk.DISABLED)
+                self.scrollOutput.see(tk.END)
+                self.scrollOutput.update_idletasks()
 
     def cmdClear(self):
         self.scrollOutput.configure(state=tk.NORMAL)
@@ -287,20 +310,20 @@ class MazeLauncher():
         self.win.destroy()
 
     def parseGameResult(self, data):
-        resList = re.compile(r"(\['1P.+frame'\])", flags=re.M)
-        resDict = re.compile(r"({'frame_used':.+\}\]})", flags=re.M)
+        resList = re.compile(r"(\['\dP.+frame'\])", flags=re.M)
+        resDict = re.compile(r"(\d\s+\dP.+)", flags=re.M)
 
         result = ''
 
         m = resList.search(data)
         if m:
             j = json.loads(m.group(1).replace("'", '"'))
-            result = os.linesep.join([result, json.dumps(j, indent=4)])
+            result = os.linesep.join([result, json.dumps(j, indent=4)
+                                      ]) + os.linesep
 
         m = resDict.search(data)
         if m:
-            j = json.loads(m.group(1).replace("'", '"'))
-            result = os.linesep.join([result, json.dumps(j, indent=4)])
+            result += m.group(1) + os.linesep
 
         return result
 
