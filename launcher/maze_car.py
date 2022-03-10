@@ -111,6 +111,7 @@ class MazeLauncher():
         spinFPS = ttk.Spinbox(self.frameOpts,
                               from_=1,
                               to=9999,
+                              increment=30,
                               textvariable=self.options['fps'])
         spinFPS.grid(column=1, row=2, sticky=self.align_left)
 
@@ -120,6 +121,7 @@ class MazeLauncher():
         spinFrames = ttk.Spinbox(self.frameOpts,
                                  from_=1,
                                  to=9999,
+                                 increment=300,
                                  textvariable=self.options['frames'])
         spinFrames.grid(column=1, row=3, sticky=self.align_left)
 
