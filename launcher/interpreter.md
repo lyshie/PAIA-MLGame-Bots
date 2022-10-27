@@ -11,12 +11,12 @@ $ source build_env/bin/activate.fish
 
 $ pip install pyinstaller
 
-$ wget https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/Paia-Desktop/master/requirements.txt
+$ wget https://raw.githubusercontent.com/jason53415/PAIA-Desktop-Python/63fabbe8d4e473947577358345f1d3bd5fb8ae63/requirements.txt
 
 $ pip install --upgrade -r requirements.txt
 $ pip install --upgrade pyinstaller
 
-$ wget https://raw.githubusercontent.com/lyshie/PAIA-MLGame-Bots/main/launcher/interpreter.py
+$ wget https://raw.githubusercontent.com/jason53415/PAIA-Desktop-Python/63fabbe8d4e473947577358345f1d3bd5fb8ae63/interpreter.py
 
 Python 3.10.7 (Fedora 36)
 $ pyinstaller --clean                                \
